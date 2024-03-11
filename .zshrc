@@ -289,6 +289,10 @@ FASTPUSH () {
 	git commit -a -m $2
 	git push origin $1
 }
+
+MV_BINARY() {
+	sudo mv $1 /usr/local/bin
+}
 ################################################################################
 
 
