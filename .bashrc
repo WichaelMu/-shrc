@@ -38,6 +38,7 @@ alias __CD_BINARIES__="cd /usr/local/bin/"
 alias py="python3"
 alias postman="~/Downloads/Postman/Postman"
 alias vsc="code ."
+alias mvim="gvim $1 -c \":set number\" -c \":set relativenumber\""
 
 alias cpc="xclip -sel c < "
 
