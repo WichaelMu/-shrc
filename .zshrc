@@ -255,8 +255,8 @@ alias _="clear"
 alias __UPGRADE__="sudo apt upgrade -y"
 alias __UPDATE__="sudo apt update -y"
 alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":249\" -c \"set relativenumber\""
-alias DIT="cd ~/Documents/ITOPS/"
-alias py="python"
+alias DIT="cd ~/Documents/IT\ OPS/"
+alias py="python3"
 
 alias glog="git log"
 alias gstat="git status"
@@ -264,9 +264,13 @@ alias gdiff="git diff"
 alias gadd="git add"
 alias gpull="git pull"
 alias gcomm="git commit"
+alias gout="git checkout $1"
+alias gmerge="git merge $1 --no-commit"
+alias gmer="git merge $1 --no-commit"
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
+alias kvim="vim $1 -c \":set number\" -c \":set relativenumber\""
 
 alias terr="terraform"
 
@@ -292,6 +296,11 @@ FASTPUSH () {
 
 MV_BINARY() {
 	sudo mv $1 /usr/local/bin
+}
+
+LEN() {
+	s=$1
+	echo ${#s}
 }
 ################################################################################
 
