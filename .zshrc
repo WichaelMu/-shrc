@@ -254,8 +254,9 @@ export DEV_INTE="AWSPowerUserAccess-159851557642"
 alias _="clear"
 alias __UPGRADE__="sudo apt upgrade -y"
 alias __UPDATE__="sudo apt update -y"
-alias __FULL_SUITE__="__UPDATE__ && __UPGRADE__"
+alias __FULL_SUITE__="__UPDATE__ && __UPGRADE__ && sudo apt autoremove -y"
 alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":249\" -c \"set relativenumber\""
+alias shrc="cd -- ~/Documents/IT\ OPS/-shrc"
 alias DIT="cd ~/Documents/IT\ OPS/"
 alias py="python3"
 
@@ -288,6 +289,16 @@ EE() {
 LGIN() {
 	EE $1
 	aws sso login --profile $1
+}
+
+__GETLOG() {
+	unzip ~/Downloads/logs_$1.zip -d ~/Downloads/logs_$1/
+	kvim ~/Downloads/logs_$1/*/*Apply.txt
+	rm ~/Downloads/logs_$1.zip
+}
+
+__RMLOG() {
+	rm -r ~/Downloads/logs_$1/
 }
 
 FASTPUSH () {
