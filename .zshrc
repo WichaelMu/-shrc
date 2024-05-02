@@ -247,6 +247,7 @@ alias l='ls -CF'
 
 # CUSTOM ENVIRONMENT VARIABLES FOR MW ##########################################
 export DEV_INTE="AWSPowerUserAccess-159851557642"
+export BINARIES="/usr/local/bin"
 ################################################################################
 
 
@@ -258,6 +259,7 @@ alias __FULL_SUITE__="__UPDATE__ && __UPGRADE__ && sudo apt autoremove -y"
 alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":249\" -c \"set relativenumber\""
 alias shrc="cd -- ~/Documents/IT\ OPS/-shrc"
 alias DIT="cd ~/Documents/IT\ OPS/"
+alias tbench="cd ~/Documents/testbench/"
 alias py="python3"
 
 alias glog="git log"
@@ -272,7 +274,8 @@ alias gmer="git merge $1 --no-commit"
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
-alias kvim="vim $1 -c \":set number\" -c \":set relativenumber\""
+alias kvim="vim $1 -c \":set number\" -c \":set relativenumber\" -c \":colorscheme pablo\""
+alias postman="~/Downloads/Postman/Postman"
 
 alias terr="terraform"
 
@@ -292,8 +295,9 @@ LGIN() {
 }
 
 __GETLOG() {
+	set -e
 	unzip ~/Downloads/logs_$1.zip -d ~/Downloads/logs_$1/
-	kvim ~/Downloads/logs_$1/*/*Apply.txt
+	kvim ~/Downloads/logs_$1/*/*.txt
 	rm ~/Downloads/logs_$1.zip
 }
 
@@ -314,6 +318,19 @@ LEN() {
 	s=$1
 	echo ${#s}
 }
+
+L() {
+	leganto $@ | xclip -selection clipboard
+	echo "Done"
+}
+
+json2terr() {
+	set -e
+	xclip -out -selection clipboard > ~/Documents/testbench/Leganto/sfn.json
+	py ~/Documents/testbench/Leganto/jsontoterr.py ~/Documents/testbench/Leganto/sfn.json | xclip -selection clipboard
+	echo "Done."
+}
+
 ################################################################################
 
 
