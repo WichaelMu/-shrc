@@ -248,6 +248,7 @@ alias l='ls -CF'
 # CUSTOM ENVIRONMENT VARIABLES FOR MW ##########################################
 export DEV_INTE="AWSPowerUserAccess-159851557642"
 export BINARIES="/usr/local/bin"
+export TESTBENCHLOC="~/Documents/testbench"
 ################################################################################
 
 
@@ -280,6 +281,8 @@ alias postman="~/Downloads/Postman/Postman"
 alias terr="terraform"
 
 alias __SHOW_DESKTOP__="xdotool key ctrl+alt+d"
+alias __COPY__="xclip -selection clipboard"
+alias __PASTE__="xclip -out -selection clipboard"
 #################################################################################
 
 
@@ -320,15 +323,28 @@ LEN() {
 }
 
 L() {
-	leganto $@ | xclip -selection clipboard
-	echo "Done"
+	leganto $@ | __COPY__
+	echo $(__PASTE__)
 }
 
 json2terr() {
 	set -e
-	xclip -out -selection clipboard > ~/Documents/testbench/Leganto/sfn.json
-	py ~/Documents/testbench/Leganto/jsontoterr.py ~/Documents/testbench/Leganto/sfn.json | xclip -selection clipboard
+	__PASTE__ > ~/Documents/testbench/Leganto/sfn.json
+	py ~/Documents/testbench/Leganto/jsontoterr.py ~/Documents/testbench/Leganto/sfn.json | __COPY__
 	echo "Done."
+}
+
+now() {
+	date | __COPY__
+	echo $(__PASTE__)
+}
+
+ddiff() {
+	~/Documents/testbench/excel/descdiff/rundescdiff.sh "$@"
+}
+
+mssng() {
+	py ~/Documents/testbench/excel/missing/missing.py
 }
 
 ################################################################################
