@@ -283,6 +283,12 @@ alias terr="terraform"
 alias __SHOW_DESKTOP__="xdotool key ctrl+alt+d"
 alias __COPY__="xclip -selection clipboard"
 alias __PASTE__="xclip -out -selection clipboard"
+
+alias __REBOOT__="sudo reboot now"
+alias __REBOOT_UEFI__="systemctl reboot --firmware-setup"
+alias __REBOOT_BIOS__="__REBOOT_UEFI__"
+alias __RESTART_BT__="systemctl restart bluetooth"
+
 #################################################################################
 
 
