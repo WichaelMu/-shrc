@@ -341,7 +341,7 @@ json2terr() {
 }
 
 now() {
-	date | __COPY__
+	date +"%A %d %B %Y %H:%M:%S.%N %Z (%z)" | __COPY__
 	echo $(__PASTE__)
 }
 
