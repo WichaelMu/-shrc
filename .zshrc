@@ -271,7 +271,7 @@ alias gpull="git pull"
 alias gcomm="git commit"
 alias gout="git checkout $1"
 alias gmerge="git merge $1 --no-commit"
-alias gmer="git merge $1 --no-commit"
+alias gmer="gmerge $1"
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
@@ -351,6 +351,16 @@ ddiff() {
 
 mssng() {
 	py ~/Documents/testbench/excel/missing/missing.py
+}
+
+gpush() {
+	if [ -z $1 ]
+	then
+		echo "Please provide a branch as the first argument."
+	else
+		set -e
+		git push origin $1
+	fi
 }
 
 ################################################################################
