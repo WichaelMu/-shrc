@@ -289,6 +289,8 @@ alias __REBOOT_UEFI__="systemctl reboot --firmware-setup"
 alias __REBOOT_BIOS__="__REBOOT_UEFI__"
 alias __RESTART_BT__="systemctl restart bluetooth"
 
+alias __REFRESH__="sudo swapoff -a && sudo swapon -a"
+
 #################################################################################
 
 
