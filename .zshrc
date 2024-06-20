@@ -360,7 +360,6 @@ gpush() {
 	then
 		echo "Please provide a branch as the first argument."
 	else
-		set -e
 		git push origin $1
 	fi
 }
