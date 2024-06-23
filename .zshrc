@@ -258,7 +258,7 @@ alias __UPGRADE__="sudo apt upgrade -y"
 alias __UPDATE__="sudo apt update -y"
 alias __FULL_SUITE__="__UPDATE__ && __UPGRADE__ && sudo apt autoremove -y"
 alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":249\" -c \"set relativenumber\""
-alias shrc="cd -- ~/Documents/IT\ OPS/-shrc"
+alias shrc="cd -- ~/Documents/-shrc"
 alias DIT="cd ~/Documents/IT\ OPS/"
 alias tbench="cd ~/Documents/testbench/"
 alias py="python3"
@@ -275,7 +275,7 @@ alias gmer="gmerge $1"
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
-alias kvim="vim $1 -c \":set number\" -c \":set relativenumber\" -c \":colorscheme pablo\""
+alias kvim="vim $1 -c \":set number\" -c \":set relativenumber\""
 alias postman="~/Downloads/Postman/Postman"
 
 alias terr="terraform"
@@ -290,6 +290,8 @@ alias __REBOOT_BIOS__="__REBOOT_UEFI__"
 alias __RESTART_BT__="systemctl restart bluetooth"
 
 alias __REFRESH__="sudo swapoff -a && sudo swapon -a"
+
+alias __install="sudo dpkg -i $1"
 
 #################################################################################
 
