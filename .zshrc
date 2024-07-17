@@ -248,7 +248,7 @@ alias l='ls -CF'
 # CUSTOM ENVIRONMENT VARIABLES FOR MW ##########################################
 export DEV_INTE="AWSPowerUserAccess-159851557642"
 export BINARIES="/usr/local/bin"
-export TESTBENCHLOC="~/Documents/testbench"
+export TESTBENCHLOC=~/Documents/testbench
 ################################################################################
 
 
@@ -276,9 +276,11 @@ alias gmer="gmerge $1"
 alias vsc="code ."
 alias cpc="xclip -sel c < "
 alias kvim="vim $1 -c \":set number\" -c \":set relativenumber\""
+alias kv=kvim
 alias postman="~/Downloads/Postman/Postman"
 
 alias terr="terraform"
+alias leganto_tmpl="$TESTBENCHLOC/Leganto/replace_template.sh $1"
 
 alias __SHOW_DESKTOP__="xdotool key ctrl+alt+d"
 alias __COPY__="xclip -selection clipboard"
