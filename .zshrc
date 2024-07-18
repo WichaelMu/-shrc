@@ -368,6 +368,8 @@ gpush() {
 	fi
 }
 
+compdef __git_branch_names gpush
+
 __watch_cpu() {
 	watch -n.05 "grep \"^[c]pu MHz\" /proc/cpuinfo"
 }
