@@ -30,3 +30,6 @@ command! T call OpenTerminalRight()
 command! -range=% C silent! execute 'normal! "+y'<CR>
 xmap <silent> <Leader>c :C<CR>
 nmap <silent> <Leader>c :'<,'>C<CR>
+
+set number
+set relativenumber
