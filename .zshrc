@@ -277,6 +277,7 @@ alias vsc="code ."
 alias cpc="xclip -sel c < "
 alias kvim="vim $1"
 alias kv=kvim
+alias kvd=kv .
 alias postman="~/Downloads/Postman/Postman"
 
 alias terr="terraform"
