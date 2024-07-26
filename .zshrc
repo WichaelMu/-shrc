@@ -275,7 +275,7 @@ alias gmer="gmerge $1"
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
-alias kvim="vim $1 -c \":set number\" -c \":set relativenumber\""
+alias kvim="vim $1"
 alias kv=kvim
 alias postman="~/Downloads/Postman/Postman"
 
