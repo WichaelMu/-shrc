@@ -253,11 +253,16 @@ export TESTBENCHLOC=~/Documents/testbench
 
 
 ################################################################################
+alias kvim="vim $1"
+alias kv=kvim
+alias kvd="kv ."
+
 alias _="clear"
 alias __UPGRADE__="sudo apt upgrade -y"
 alias __UPDATE__="sudo apt update -y"
 alias __FULL_SUITE__="__UPDATE__ && __UPGRADE__ && sudo apt autoremove -y"
 alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":249\" -c \"set relativenumber\""
+alias __VEDIT__="kv ~/.vimrc"
 alias shrc="cd -- ~/Documents/-shrc"
 alias DIT="cd ~/Documents/IT\ OPS/"
 alias tbench="cd ~/Documents/testbench/"
@@ -275,9 +280,6 @@ alias gmer="gmerge $1"
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
-alias kvim="vim $1"
-alias kv=kvim
-alias kvd=kv .
 alias postman="~/Downloads/Postman/Postman"
 
 alias terr="terraform"
