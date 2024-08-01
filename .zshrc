@@ -247,6 +247,7 @@ alias l='ls -CF'
 
 # CUSTOM ENVIRONMENT VARIABLES FOR MW ##########################################
 export DEV_INTE="AWSPowerUserAccess-159851557642"
+export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
 ################################################################################
@@ -284,6 +285,7 @@ alias postman="~/Downloads/Postman/Postman"
 
 alias terr="terraform"
 alias leganto_tmpl="$TESTBENCHLOC/Leganto/replace_template.sh $1"
+alias qjq="cat $1 | jq -r $2"
 
 alias __SHOW_DESKTOP__="xdotool key ctrl+alt+d"
 alias __COPY__="xclip -selection clipboard"
