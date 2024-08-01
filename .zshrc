@@ -285,7 +285,6 @@ alias postman="~/Downloads/Postman/Postman"
 
 alias terr="terraform"
 alias leganto_tmpl="$TESTBENCHLOC/Leganto/replace_template.sh $1"
-alias qjq="cat $1 | jq -r $2"
 
 alias __SHOW_DESKTOP__="xdotool key ctrl+alt+d"
 alias __COPY__="xclip -selection clipboard"
@@ -377,6 +376,27 @@ compdef __git_branch_names gpush
 
 __watch_cpu() {
 	watch -n.05 "grep \"^[c]pu MHz\" /proc/cpuinfo"
+}
+
+qjq() {
+	VALID=1
+
+	if [ -z $1 ]
+	then
+		echo "Please provide a JSON in \$1 as Input."
+		VALID=0
+	fi
+
+	if [ -z $2 ]
+	then
+		echo "Please enter a jquery expression."
+		VALID=0
+	fi
+
+	if [ $VALID -eq 1 ]
+	then
+		cat $1 | jq -r $2
+	fi
 }
 
 
