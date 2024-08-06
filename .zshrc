@@ -283,6 +283,9 @@ alias vsc="code ."
 alias cpc="xclip -sel c < "
 alias postman="~/Downloads/Postman/Postman"
 
+alias lsl="ls -l"
+alias lsla="ls -la"
+
 alias terr="terraform"
 alias leganto_tmpl="$TESTBENCHLOC/Leganto/replace_template.sh $1"
 
