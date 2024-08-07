@@ -250,6 +250,11 @@ export DEV_INTE="AWSPowerUserAccess-159851557642"
 export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
+
+export AWS_DEV_INTE="159851557642"
+export AWS_SANDPIT="046955552049"
+export AWS_NP_DATA="014498658256"
+export AWS_P_DATA="014498658553"
 ################################################################################
 
 
