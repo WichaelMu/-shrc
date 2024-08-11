@@ -264,6 +264,7 @@ alias kv=kvim
 alias kvd="kv ."
 
 alias _="clear"
+alias __="exit"
 alias __UPGRADE__="sudo apt upgrade -y"
 alias __UPDATE__="sudo apt update -y"
 alias __FULL_SUITE__="__UPDATE__ && __UPGRADE__ && sudo apt autoremove -y"
