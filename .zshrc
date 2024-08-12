@@ -290,6 +290,7 @@ alias cpc="xclip -sel c < "
 alias postman="~/Downloads/Postman/Postman"
 
 alias lsl="ls -l"
+alias lsa="ls -a"
 alias lsla="ls -la"
 
 alias terr="terraform"
