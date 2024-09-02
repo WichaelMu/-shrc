@@ -412,9 +412,9 @@ qjq() {
 here() {
 	if [ -z $1 ]
 	then
-		nautilus .
+		nautilus . >/dev/null 2>&1
 	else
-		nautilus $1
+		nautilus $1 >/dev/null 2>&1
 	fi
 }
 
@@ -437,3 +437,5 @@ fi
 if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
 fi
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
