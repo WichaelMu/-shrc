@@ -287,7 +287,7 @@ alias gmer="gmerge $1"
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
-alias postman="~/Downloads/Postman/Postman"
+alias postman="~/Postman/Postman"
 
 alias lsl="ls -l"
 alias lsa="ls -a"
@@ -406,6 +406,15 @@ qjq() {
 	if [ $VALID -eq 1 ]
 	then
 		cat $1 | jq -r $2
+	fi
+}
+
+here() {
+	if [ -z $1 ]
+	then
+		nautilus .
+	else
+		nautilus $1
 	fi
 }
 
