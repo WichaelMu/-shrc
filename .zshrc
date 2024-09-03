@@ -418,6 +418,16 @@ here() {
 	fi
 }
 
+# Get the current Git branch
+gbranch() {
+    BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [ -n "$BRANCH" ]; then
+        echo " > %F{blue}$BRANCH%F{%(#.blue.green)}"
+    fi
+}
+
+PS1='%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n㉿%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)
+└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
 
 ################################################################################
 
