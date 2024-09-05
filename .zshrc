@@ -284,6 +284,7 @@ alias gcomm="git commit"
 alias gout="git checkout $1"
 alias gmerge="git merge $1 --no-commit"
 alias gmer="gmerge $1"
+alias -s git="git clone"
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
@@ -406,6 +407,15 @@ qjq() {
 	if [ $VALID -eq 1 ]
 	then
 		cat $1 | jq -r $2
+	fi
+}
+
+pjq() {
+	if [ -z $1 ]
+	then
+		echo "Please provide a jquery expression."
+	else
+		__PASTE__ | jq -r $1
 	fi
 }
 
