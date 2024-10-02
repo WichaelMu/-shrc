@@ -250,16 +250,16 @@ export DEV_INTE="AWSPowerUserAccess-159851557642"
 export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
+export DITLOC=~/Documents/IT\ OPS/
 
 export AWS_DEV_INTE="159851557642"
 export AWS_SANDPIT="046955552049"
 export AWS_NP_DATA="014498658256"
-export AWS_P_DATA="014498658553"
+export AWS_PR_DATA="014498658553"
 ################################################################################
 
 
 ################################################################################
-alias kvim="vim $1"
 alias kv=kvim
 alias kvd="kv ."
 
@@ -285,6 +285,11 @@ alias gout="git checkout $1"
 alias gmerge="git merge $1 --no-commit"
 alias gmer="gmerge $1"
 alias -s git="git clone"
+
+alias -s png="eog"
+alias -s txt="kv"
+alias -s docx="libreoffice"
+alias CMMTP='function _cmmtp() { xdg-open "https://uts-edu.atlassian.net/browse/CMMTP-$1"; }; _cmmtp'
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
@@ -439,6 +444,10 @@ gbranch() {
 PS1='%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n㉿%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)
 └─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
 
+kenv () {
+	. ~/venv/KALI_VENV/bin/activate
+}
+
 ################################################################################
 
 
@@ -446,16 +455,26 @@ PS1='%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_
 bindkey "^ " autosuggest-accept
 ################################################################################
 
-# enable auto-suggestions based on the history
 if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
     . /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    # change suggestion color
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#999'
 fi
 
-# enable command-not-found if installed
 if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
 fi
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+autoload -Uz compinit
+compinit
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' verbose yes
+
+zstyle ':completion:*' completer _complete _files _correct _prefix
+
+zstyle ':completion:*' use-cache yes
+
+bindkey '^I' expand-or-complete
