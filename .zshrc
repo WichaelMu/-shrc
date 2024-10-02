@@ -466,15 +466,39 @@ fi
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
+# Source autosuggestions and autocomplete
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
+# Custom function to show file details like ls -la
+function show_ls {
+    local prefix="${LBUFFER}" # Text typed so far
+    # Show 'ls -la' for the matching files/directories
+    if [[ -d "$prefix" ]]; then
+        LBUFFER=$prefix
+        zle redisplay
+        ls -la "$prefix"
+    fi
+}
+
+# Bind the custom function to be triggered on each key press
+zle -N show_ls
+bindkey "^I" show_ls
+
+# Initialize the Zsh completion system
 autoload -Uz compinit
 compinit
 
+# Set completion options
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' verbose yes
 
+# Enable common substring completion
 zstyle ':completion:*' completer _complete _files _correct _prefix
 
+# Use the default completers to find and insert the common substring
 zstyle ':completion:*' use-cache yes
 
+# Bind Tab to autocomplete with the common substring
 bindkey '^I' expand-or-complete
