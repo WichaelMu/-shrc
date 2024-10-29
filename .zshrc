@@ -91,22 +91,33 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+# Get the current Git branch
+gbranch() {
+    BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [ -n "$BRANCH" ]; then
+        echo " > %F{blue}$BRANCH%F{%(#.blue.green)}"
+    fi
+}
+
+#PS1='%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n㉿%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)
+#└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
+
 configure_prompt() {
     prompt_symbol=㉿
     # Skull emoji for root terminal
     #[ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
         twoline)
-            PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
+	     PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
             # Right-side prompt with exit codes and background processes
             #RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
             ;;
         oneline)
-            PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b%F{reset}%(#.#.$) '
+	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b$(gbranch)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
         backtrack)
-            PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{red}%n@%m%b%F{reset}:%B%F{blue}%~%b%F{reset}%(#.#.$) '
+	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{red}%n@%m%b%F{reset}:%B%F{blue}%~%b$(gbranch)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
     esac
@@ -241,9 +252,10 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # some more ls aliases
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
+alias ll='ls -l --group-directories-first'
+alias la='ls -A --group-directories-first'
+alias lla='ls -la --group-directories-first'
+alias l='ls -CF --group-directories-first'
 
 # CUSTOM ENVIRONMENT VARIABLES FOR MW ##########################################
 export DEV_INTE="AWSPowerUserAccess-159851557642"
@@ -276,6 +288,8 @@ alias tbench="cd ~/Documents/testbench/"
 alias py="python3"
 
 alias glog="git log"
+alias glogn="ghash $1"
+alias gtree="glog --graph --oneline --all"
 alias gstat="git status"
 alias gdiff="git diff"
 alias gadd="git add"
@@ -292,15 +306,16 @@ alias -s jpeg="eog --new-instance"
 alias -s txt="kv"
 alias -s docx="libreoffice"
 alias -s tf="kv"
+alias -s hcl="kv"
 alias CMMTP='function _cmmtp() { xdg-open "https://uts-edu.atlassian.net/browse/CMMTP-$1"; }; _cmmtp'
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
 alias postman="~/Postman/Postman"
 
-alias lsl="ls -l"
-alias lsa="ls -a"
-alias lsla="ls -la"
+alias lsl="ls -l --group-directories-first"
+alias lsa="ls -a --group-directories-first"
+alias lsla="ls -la --group-directories-first"
 
 alias terr="terraform"
 alias leganto_tmpl="$TESTBENCHLOC/Leganto/replace_template.sh $1"
@@ -393,6 +408,28 @@ gpush() {
 
 compdef __git_branch_names gpush
 
+ghash() {
+	if [ -z $1 ]
+	then
+		GLOGN=5
+	else
+		GLOGN=$1
+	fi
+
+	glog -n $GLOGN --pretty=format:'%h "%Cgreen%s%Creset" - %cn; %ar (%aD)'
+}
+
+ghashf() {
+	if [ -z $1 ]
+	then
+		HASHOF=1
+	else
+		HASHOF=$1
+	fi
+
+	ghash $HASHOF | tail -n 1 | awk '{ print $1 }'
+}
+
 __watch_cpu() {
 	watch -n.05 "grep \"^[c]pu MHz\" /proc/cpuinfo"
 }
@@ -436,17 +473,6 @@ here() {
 	fi
 }
 
-# Get the current Git branch
-gbranch() {
-    BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-    if [ -n "$BRANCH" ]; then
-        echo " > %F{blue}$BRANCH%F{%(#.blue.green)}"
-    fi
-}
-
-PS1='%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n㉿%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)
-└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
-
 kenv () {
 	. ~/venv/KALI_VENV/bin/activate
 }
@@ -480,7 +506,7 @@ function show_ls {
     if [[ -d "$prefix" ]]; then
         LBUFFER=$prefix
         zle redisplay
-        ls -la "$prefix"
+        ls -la "$prefix" --group-directories-first
     fi
 }
 
