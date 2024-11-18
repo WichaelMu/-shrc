@@ -262,7 +262,8 @@ export DEV_INTE="AWSPowerUserAccess-159851557642"
 export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
-export DITLOC=~/Documents/IT\ OPS/
+export DITLOC=~/Documents/IT\ OPS
+export PYTHONPATH="${PYTHONPATH}:${DITLOC}tf-uts-cmm-curriculum-product/contrib/src/lambda/api_common:${DITLOC}tf-uts-cmm-curriculum-product/contrib/src/lambda/api_debug_common:${TESTBENCHLOC}M/"
 
 export AWS_DEV_INTE="159851557642"
 export AWS_SANDPIT="046955552049"
@@ -277,10 +278,11 @@ alias kvd="kv ."
 
 alias _="clear"
 alias __="exit"
+alias __CLEAN__"sudo apt clean && sudo apt autoclean"
 alias __UPGRADE__="sudo apt upgrade -y"
 alias __UPDATE__="sudo apt update -y"
-alias __FULL_SUITE__="__UPDATE__ && __UPGRADE__ && sudo apt autoremove -y"
-alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":249\" -c \"set relativenumber\""
+alias __FULL_SUITE__="__CLEAN__ && __UPDATE__ && __UPGRADE__ && sudo apt autoremove -y"
+alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":261\" -c \"set relativenumber\""
 alias __VEDIT__="kv ~/.vimrc"
 alias shrc="cd -- ~/Documents/-shrc"
 alias DIT="cd ~/Documents/IT\ OPS/"
@@ -512,7 +514,7 @@ function show_ls {
 
 # Bind the custom function to be triggered on each key press
 zle -N show_ls
-bindkey "^I" show_ls
+# bindkey "^I" show_ls
 
 # Initialize the Zsh completion system
 # autoload -Uz compinit
@@ -524,8 +526,11 @@ zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' verbose yes
 
 # Enable common substring completion
-zstyle ':completion:*' completer _complete _files _correct _prefix
-zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'r:|[.]*=**'
+zstyle ':completion:*' completer _complete _files _correct _prefix _ignored
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+# 'r:|[.]*=**'
+zstyle ':completion:*' max-errors 2
+zstyle ':completion:*' accept-exact 'true'
 
 # Use the default completers to find and insert the common substring
 zstyle ':completion:*' use-cache yes
