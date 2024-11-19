@@ -263,7 +263,7 @@ export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
 export DITLOC=~/Documents/IT\ OPS
-export PYTHONPATH="${PYTHONPATH}:${DITLOC}tf-uts-cmm-curriculum-product/contrib/src/lambda/api_common:${DITLOC}tf-uts-cmm-curriculum-product/contrib/src/lambda/api_debug_common:${TESTBENCHLOC}M/"
+export PYTHONPATH="${PYTHONPATH}:${DITLOC}/tf-uts-cmm-curriculum-product/contrib/src/lambda/api_common:${DITLOC}/tf-uts-cmm-curriculum-product/contrib/src/lambda/api_debug_common:${TESTBENCHLOC}/M/"
 
 export AWS_DEV_INTE="159851557642"
 export AWS_SANDPIT="046955552049"
@@ -278,7 +278,7 @@ alias kvd="kv ."
 
 alias _="clear"
 alias __="exit"
-alias __CLEAN__"sudo apt clean && sudo apt autoclean"
+alias __CLEAN__="sudo apt clean && sudo apt autoclean"
 alias __UPGRADE__="sudo apt upgrade -y"
 alias __UPDATE__="sudo apt update -y"
 alias __FULL_SUITE__="__CLEAN__ && __UPDATE__ && __UPGRADE__ && sudo apt autoremove -y"
