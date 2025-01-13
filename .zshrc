@@ -320,6 +320,7 @@ alias lsa="ls -a --group-directories-first"
 alias lsla="ls -la --group-directories-first"
 
 alias terr="terraform"
+alias gr="grep"
 alias leganto_tmpl="$TESTBENCHLOC/Leganto/replace_template.sh $1"
 
 alias __SHOW_DESKTOP__="xdotool key ctrl+alt+d"
@@ -515,10 +516,6 @@ function show_ls {
 # Bind the custom function to be triggered on each key press
 zle -N show_ls
 # bindkey "^I" show_ls
-
-# Initialize the Zsh completion system
-# autoload -Uz compinit
-# compinit
 
 # Set completion options
 zstyle ':completion:*' menu select=long-list
