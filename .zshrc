@@ -263,7 +263,7 @@ export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
 export DITLOC=~/Documents/IT\ OPS
-export PYTHONPATH="${PYTHONPATH}:${DITLOC}/tf-uts-cmm-curriculum-product/contrib/src/lambda/api_common:${DITLOC}/tf-uts-cmm-curriculum-product/contrib/src/lambda/api_debug_common:${TESTBENCHLOC}/M/"
+export PYTHONPATH="${PYTHONPATH}:${DITLOC}/tf-uts-cmm-curriculum-product/contrib/src/lambda/api_common:${DITLOC}/tf-uts-cmm-curriculum-product/contrib/src/lambda/api_debug_common:${TESTBENCHLOC}/M/:${DITLOC}/tf-data-plane-copt/contrib/src/lambda/log_event_module"
 
 export AWS_DEV_INTE="159851557642"
 export AWS_SANDPIT="046955552049"
@@ -331,6 +331,8 @@ alias __REBOOT__="sudo reboot now"
 alias __REBOOT_UEFI__="systemctl reboot --firmware-setup"
 alias __REBOOT_BIOS__="__REBOOT_UEFI__"
 alias __RESTART_BT__="systemctl restart bluetooth"
+alias boot_win="sudo grub-reboot 2 && reboot"
+alias __REBOOT_WIN__="boot_win"
 
 alias __REFRESH__="sudo swapoff -a && sudo swapon -a"
 
@@ -478,6 +480,19 @@ here() {
 
 kenv () {
 	. ~/venv/KALI_VENV/bin/activate
+}
+
+mount_win() {
+
+	if [ -z $1 ]
+	then
+		mkdir -p ~/mounted
+		MOUNTLOC=~/mounted
+	else
+		MOUNTLOC=$1
+	fi
+
+	sudo mount /dev/nvme0n1p3 $MOUNTLOC
 }
 
 ################################################################################
