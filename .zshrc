@@ -482,7 +482,7 @@ kenv () {
 	. ~/venv/KALI_VENV/bin/activate
 }
 
-mount_win() {
+MOUNT_WIN() {
 
 	if [ -z $1 ]
 	then
@@ -552,7 +552,7 @@ bindkey '^I' expand-or-complete
 
 # Python Autocomplete Shenanigans ##############################################
 
-#compdef python3.12
+#compdef python3.13
 # Run something, muting output or redirecting it to the debug stream
 # depending on the value of _ARC_DEBUG.
 # If ARGCOMPLETE_USE_TEMPFILES is set, use tempfiles for IPC.
@@ -620,7 +620,7 @@ _python_argcomplete() {
     fi
 }
 if [[ -z "${ZSH_VERSION-}" ]]; then
-    complete -o nospace -o default -o bashdefault -F _python_argcomplete python3.12
+    complete -o nospace -o default -o bashdefault -F _python_argcomplete python3.13
 else
     # When called by the Zsh completion system, this will end with
     # "loadautofunc" when initially autoloaded and "shfunc" later on, otherwise,
@@ -630,7 +630,7 @@ else
     if [[ $zsh_eval_context == *func ]]; then
         _python_argcomplete "$@"
     else
-        compdef _python_argcomplete python3.12
+        compdef _python_argcomplete python3.13
     fi
 fi
 
