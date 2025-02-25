@@ -104,20 +104,25 @@ gbranch() {
 
 configure_prompt() {
     prompt_symbol=㉿
+    VENV="%B%F{red}${VIRTUAL_ENV:+$(basename $VIRTUAL_ENV)}%b%F{%(#.blue.green)}"
+
+    # Old green
+    #59FF60
+
     # Skull emoji for root terminal
     #[ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
         twoline)
-	     PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
+	     PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VENV))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
             # Right-side prompt with exit codes and background processes
             #RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
             ;;
         oneline)
-	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b$(gbranch)%F{reset} %(#.#.$) '
+	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b$(gbranch)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
         backtrack)
-	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))}%B%F{red}%n@%m%b%F{reset}:%B%F{blue}%~%b$(gbranch)%F{reset} %(#.#.$) '
+	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VENV))}%B%F{red}%n@%m%b%F{reset}:%B%F{blue}%~%b$(gbranch)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
     esac
@@ -294,6 +299,7 @@ alias glogn="ghash $1"
 alias gtree="glog --graph --oneline --all"
 alias gstat="git status"
 alias gdiff="git diff"
+alias gdiff2="gdiff --word-diff=color --word-diff-regex=."
 alias gadd="git add"
 alias gpull="git pull"
 alias gcomm="git commit"
