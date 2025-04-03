@@ -99,13 +99,24 @@ gbranch() {
     fi
 }
 
-#PS1='%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n㉿%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)
+tworkspace () {
+	TWORKSPACE=$(terraform workspace show)
+	if [ -n "$TWORKSPACE" ]; then
+		if [ "$TWORKSPACE" != "default" ]; then
+			echo " | %F{magenta}$TWORKSPACE%F{%(#.blue.green)}"
+		fi
+	fi
+}
+
+prompt_venv() {
+    echo "%B%F{red}${VIRTUAL_ENV:+$(basename $VIRTUAL_ENV)}%F{%(#.blue.green)}"
+}
+
+#PS1='%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n㉿%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)$(tworkspace)
 #└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
 
 configure_prompt() {
     prompt_symbol=㉿
-    VENV="%B%F{red}${VIRTUAL_ENV:+$(basename $VIRTUAL_ENV)}%b%F{%(#.blue.green)}"
-
     # Old green
     #59FF60
 
@@ -113,16 +124,16 @@ configure_prompt() {
     #[ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
         twoline)
-	     PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VENV))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
+	     PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(prompt_venv))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)$(tworkspace)\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
             # Right-side prompt with exit codes and background processes
             #RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
             ;;
         oneline)
-	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b$(gbranch)%F{reset} %(#.#.$) '
+	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b$(gbranch)$(tworkspace)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
         backtrack)
-	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VENV))}%B%F{red}%n@%m%b%F{reset}:%B%F{blue}%~%b$(gbranch)%F{reset} %(#.#.$) '
+	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VENV))}%B%F{red}%n@%m%b%F{reset}:%B%F{blue}%~%b$(gbranch)$(tworkspace)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
     esac
@@ -287,7 +298,7 @@ alias __CLEAN__="sudo apt clean && sudo apt autoclean"
 alias __UPGRADE__="sudo apt upgrade -y"
 alias __UPDATE__="sudo apt update -y"
 alias __FULL_SUITE__="sudo hwclock --hctosys && __UPDATE__ && __UPGRADE__ && sudo apt autoremove -y && sudo snap refresh"
-alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":261\" -c \"set relativenumber\""
+alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":292\" -c \"set relativenumber\""
 alias __VEDIT__="kv ~/.vimrc"
 alias shrc="cd -- ~/Documents/-shrc"
 alias DIT="cd ~/Documents/IT\ OPS/"
@@ -315,6 +326,7 @@ alias -s txt="kv"
 alias -s docx="libreoffice"
 alias -s tf="kv"
 alias -s hcl="kv"
+alias -s pdf="evince"
 alias CMMTP='function _cmmtp() { xdg-open "https://uts-edu.atlassian.net/browse/CMMTP-$1"; }; _cmmtp'
 
 alias vsc="code ."
@@ -501,6 +513,15 @@ MOUNT_WIN() {
 	sudo mount /dev/nvme0n1p3 $MOUNTLOC
 }
 
+update_discord() {
+	DISCORD_URL="https://discord.com/api/download?platform=linux&format=deb"
+	DISCORD_TMP_LOC=/tmp/
+
+	curl --location --output $DISCORD_TMP_LOC $DISCORD_URL
+	__install $DISCORD_TMP_LOC
+}
+
+
 ################################################################################
 
 
@@ -641,3 +662,5 @@ else
 fi
 
 ################################################################################
+
+complete -o nospace -C /usr/local/bin/terraform terraform
