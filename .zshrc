@@ -129,11 +129,11 @@ configure_prompt() {
             #RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
             ;;
         oneline)
-	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VENV))}%B%F{%(#.red.blue)}%n@%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b$(gbranch)$(tworkspace)%F{reset} %(#.#.$) '
+	     PROMPT=$'%F{%(#.blue.green)}${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(prompt_venv))─}%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b$(gbranch)$(tworkspace)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
         backtrack)
-	     PROMPT=$'${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(basename $VENV))}%B%F{red}%n@%m%b%F{reset}:%B%F{blue}%~%b$(gbranch)$(tworkspace)%F{reset} %(#.#.$) '
+	     PROMPT=$'%F{%(#.blue.green)}${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(prompt_venv))─}%B%F{red}%n'$prompt_symbol$'%m%b%F{reset}:%B%F{blue}%~%b$(gbranch)$(tworkspace)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
     esac
@@ -143,7 +143,7 @@ configure_prompt() {
 # The following block is surrounded by two delimiters.
 # These delimiters must not be modified. Thanks.
 # START KALI CONFIG VARIABLES
-PROMPT_ALTERNATIVE=twoline
+PROMPT_ALTERNATIVE='twoline'
 NEWLINE_BEFORE_PROMPT=yes
 # STOP KALI CONFIG VARIABLES
 
@@ -355,6 +355,7 @@ alias __REBOOT_WIN__="boot_win"
 alias __REFRESH__="sudo swapoff -a && sudo swapon -a"
 
 alias __install="sudo dpkg -i $1"
+alias __extract="tar -xzvf $1"
 
 #################################################################################
 
@@ -451,6 +452,15 @@ ghashf() {
 	fi
 
 	ghash $HASHOF | tail -n 1 | awk '{ print $1 }'
+}
+
+gdiffh() {
+	if [ -z $2 ]
+	then
+		gdiff $(ghashf 1) $(ghashf $1)
+	else
+		gdiff $(ghashf $1) $(ghashf $2)
+	fi
 }
 
 __watch_cpu() {
@@ -663,4 +673,4 @@ fi
 
 ################################################################################
 
-complete -o nospace -C /usr/local/bin/terraform terraform
+#complete -o nospace -C /usr/local/bin/terraform terraform
