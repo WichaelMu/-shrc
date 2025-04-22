@@ -322,6 +322,7 @@ alias -s git="git clone"
 alias -s png="eog --new-instance"
 alias -s jpg="eog --new-instance"
 alias -s jpeg="eog --new-instance"
+alias -s svg="eog --new-instance"
 alias -s txt="kv"
 alias -s docx="libreoffice"
 alias -s tf="kv"
@@ -525,7 +526,7 @@ MOUNT_WIN() {
 
 update_discord() {
 	DISCORD_URL="https://discord.com/api/download?platform=linux&format=deb"
-	DISCORD_TMP_LOC=/tmp/
+	DISCORD_TMP_LOC="/tmp/discord-debian-linux.tar.gz"
 
 	curl --location --output $DISCORD_TMP_LOC $DISCORD_URL
 	__install $DISCORD_TMP_LOC
