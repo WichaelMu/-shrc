@@ -87,6 +87,7 @@ set ruler
 call plug#begin('~/.vim/plugged')
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'OmniSharp/omnisharp-vim'
+Plug 'powerman/vim-plugin-AnsiEsc'
 call plug#end()
 
 " colorscheme palenight
@@ -100,3 +101,12 @@ command! -nargs=1 G execute 'vimgrep /' . <q-args> . '/gj **/*' | copen | wincmd
 vmap <leader>c "+y
 
 let g:clang_library_path='/usr/lib/llvm-17/lib/libclang-17.so.1'
+
+if !exists(":DiffOrig")
+    command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+          \ | wincmd p | diffthis
+endif
+
+command! D exec "vert new | setlocal buftype=nofile | read !git diff --word-diff=color --word-diff-regex=. " . shellescape(expand('%')) . " | colordiff" | exec "AnsiEsc"
+
+command L set listchars=tab:→\ ,space:·,nbsp:␣,trail:•,eol:¶,precedes:«,extends:» | set list
