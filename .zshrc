@@ -481,7 +481,7 @@ gopen() {
 
 	if [ ! -z $REMOTE_URL ]
 	then
-		xdg-open "$HTTPS_URL" > /dev/null 2>&1
+		xdg-open "$REMOTE_URL" > /dev/null 2>&1
 	else
 		echo "Not a .git repository!"
 	fi
