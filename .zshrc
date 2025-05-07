@@ -464,6 +464,29 @@ gdiffh() {
 	fi
 }
 
+grepo() {
+	REMOTE_URL=$(git config --get remote.origin.url)
+
+	if [[ $REMOTE_URL == git@*:* ]]
+	then
+		HTTPS_URL=${REMOTE_URL/git@/https:\/\/}
+		HTTPS_URL=${HTTPS_URL/github\.com:/github\.com\/}
+		HTTPS_URL=${HTTPS_URL/\.git/\/tree/$(git rev-parse --abbrev-ref HEAD 2>/dev/null)}
+		echo $HTTPS_URL
+	fi
+}
+
+gopen() {
+	REMOTE_URL=$(grepo)
+
+	if [ ! -z $REMOTE_URL ]
+	then
+		xdg-open "$HTTPS_URL" > /dev/null 2>&1
+	else
+		echo "Not a .git repository!"
+	fi
+}
+
 __watch_cpu() {
 	watch -n.05 "grep \"^[c]pu MHz\" /proc/cpuinfo"
 }
