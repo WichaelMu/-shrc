@@ -431,8 +431,6 @@ gpush() {
 	fi
 }
 
-compdef __git_branch_names gpush
-
 ghash() {
 	if [ -z $1 ]
 	then
@@ -484,6 +482,21 @@ gopen() {
 		xdg-open "$REMOTE_URL" > /dev/null 2>&1
 	else
 		echo "Not a .git repository!"
+	fi
+}
+
+fpush() {
+	USAGE_MESSAGE="fpush __TARGET_BRANCH__ __RETURN_BRANCH__"
+	if [ -z $1 ]
+	then
+		echo $USAGE_MESSAGE
+	elif [ -z $2 ]
+	then
+		echo $USAGE_MESSAGE
+	else
+		TARGET_BRANCH=$1
+		RETURN_BRANCH=$2
+		gpush $RETURN_BRANCH && gout $TARGET_BRANCH && gpull && gmer $RETURN_BRANCH && gpush $TARGET_BRANCH && gout $RETURN_BRANCH
 	fi
 }
 
@@ -555,6 +568,9 @@ update_discord() {
 	__install $DISCORD_TMP_LOC
 }
 
+
+compdef __git_branch_names gpush
+compdef __git_branch_names fpush
 
 ################################################################################
 
