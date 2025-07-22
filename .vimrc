@@ -110,7 +110,7 @@ command! D exec "vert new | setlocal buftype=nofile | read !git diff --word-diff
 
 command L set listchars=tab:→\ ,space:·,nbsp:␣,trail:•,eol:¶,precedes:«,extends:» | set list
 
-command -nargs=1 TT tabnew <q-args>
+command -nargs=1 -complete=file -bang TT tabnew<bang> <args>
 nnoremap <C-Left> :tabprevious<CR>
 nnoremap <C-Right> :tabnext<CR>
 nnoremap <C-h> :tabprevious<CR>
@@ -120,16 +120,22 @@ nnoremap <C-l> :tabnext<CR>
 " Only lint while you type, not on every file write
 let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_on_enter = 1
+" let g:ale_virtualtext_cursor = 'current'
 
 " Use whichever linters you enabled above
 let g:ale_linters = {
 \   'python': [ 'pyright' ],
 \}
 
+let b:ale_python_pyright_config = {
+\ 'python': {
+\   'pythonPath': '/usr/bin/python3',
+\   'venvPath': '/home/Absolution/venv/KALI_VENV/',
+\ },
+\}
+
 " let g:ale_warn_about_trailing_whitespace = 0
 " let g:ale_warn_about_trailing_blank_lines = 0
-"
-" <leader>l toggle globally
 nnoremap <leader>p :ALEToggle<CR>
 " <leader>b toggle just this buffer
 " nnoremap <leader>b :ALEToggleBuffer<CR>
