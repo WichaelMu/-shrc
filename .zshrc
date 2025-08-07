@@ -279,7 +279,7 @@ export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
 export DITLOC=~/Documents/IT\ OPS
-export PYTHONPATH="${PYTHONPATH}:${DITLOC}/tf-uts-cmm-curriculum-product/contrib/src/lambda/api_common:${DITLOC}/tf-uts-cmm-curriculum-product/contrib/src/lambda/api_debug_common:${TESTBENCHLOC}/M/:${DITLOC}/tf-data-plane-copt/contrib/src/lambda/log_event_module"
+export CONSTANT_PYTHONPATH=$PYTHONPATH
 
 export AWS_DEV_INTE="159851557642"
 export AWS_SANDPIT="046955552049"
@@ -298,7 +298,7 @@ alias __CLEAN__="sudo apt clean && sudo apt autoclean"
 alias __UPGRADE__="sudo apt upgrade -y"
 alias __UPDATE__="sudo apt update -y"
 alias __FULL_SUITE__="sudo hwclock --hctosys && __UPDATE__ && __UPGRADE__ && sudo apt autoremove -y && sudo snap refresh"
-alias __EDIT__="vim ~/.zshrc -c\"set number\" -c \":292\" -c \"set relativenumber\""
+alias __EDIT__="kv ~/.zshrc -c\"set number\" -c \":292\" -c \"set relativenumber\""
 alias __VEDIT__="kv ~/.vimrc"
 alias shrc="cd -- ~/Documents/-shrc"
 alias DIT="cd ~/Documents/IT\ OPS/"
@@ -714,3 +714,69 @@ fi
 ################################################################################
 
 #complete -o nospace -C /usr/local/bin/terraform terraform
+
+
+# PYTHONPATH Recompute on Change Directory -------------------------------------
+
+_rebuild_pythonpath_for_repo() {
+  local target="contrib/src/lambda"
+  local base="${CONSTANT_PYTHONPATH}"
+  local -a addpaths=()
+
+  if [[ -d "$target" ]]; then
+    setopt local_options null_glob extended_glob
+
+    # Include the target dir and all subdirectories (recursive).
+    # (If you only want immediate children, use: "$target" "$target"/*(/) )
+    local -a candidates
+    candidates=( "$target" "$target"/**/*(/) )
+
+    local d
+    for d in "${candidates[@]}"; do
+      case "$d" in
+        (#b)*/(.git|.hg|.svn)(/*|) ) continue ;;
+        (#b)*/(.venv|venv)(/*|)     ) continue ;;
+        (#b)*/(__pycache__|.mypy_cache|.pytest_cache|.ruff_cache)(/*|) ) continue ;;
+        (#b)*/(node_modules|.tox|dist|build|.direnv)(/*|) ) continue ;;
+      esac
+      addpaths+=("$d")
+    done
+
+    # Make everything ABSOLUTE (resolve ./..; keeps symlinks intact).
+    # Use ${var:A} if you prefer resolving symlinks.
+    local -a abs_addpaths=()
+    for d in "${addpaths[@]}"; do
+      abs_addpaths+=("${d:a}")   # change to ${d:A} to resolve symlinks
+    done
+    addpaths=("${abs_addpaths[@]}")
+
+    # OPTIONAL (tighter): keep only dirs that actually contain Python files
+    local -a filtered=()
+    for d in "${addpaths[@]}"; do
+      [[ -n ${(f)"$(print -r -- $d/*.py(N) $d/**/__init__.py(N))"} ]] && filtered+=("$d")
+    done
+    addpaths=("${filtered[@]}")
+  fi
+
+  # Join new entries and prepend baseline (if any).
+  local joined combined
+  joined="${(j/:/)addpaths}"
+  if [[ -n "$base" && -n "$joined" ]]; then
+    combined="$base:$joined"
+  elif [[ -n "$base" ]]; then
+    combined="$base"
+  else
+    combined="$joined"
+  fi
+
+  # De-duplicate while preserving order.
+  local -a parts
+  parts=( ${(s/:/)combined} )
+  typeset -aU parts
+  export PYTHONPATH="${(j/:/)parts}"
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd _rebuild_pythonpath_for_repo
+
+_rebuild_pythonpath_for_repo
