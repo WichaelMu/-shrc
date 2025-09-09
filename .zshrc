@@ -304,6 +304,7 @@ alias shrc="cd -- ~/Documents/-shrc"
 alias DIT="cd ~/Documents/IT\ OPS/"
 alias tbench="cd ~/Documents/testbench/"
 alias py="python3"
+alias csc="$TESTBENCHLOC/cscompile/cscompile.sh $@"
 
 alias glog="git log"
 alias glogn="ghash $1"
