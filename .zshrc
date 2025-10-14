@@ -91,9 +91,13 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+gbranch () {
+	echo $(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+}
+
 # Get the current Git branch
-gbranch() {
-    BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+gbranch_colourised() {
+    BRANCH=$(gbranch)
     if [ -n "$BRANCH" ]; then
         echo " > %F{blue}$BRANCH%F{%(#.blue.green)}"
     fi
@@ -112,7 +116,7 @@ prompt_venv() {
     echo "%B%F{red}${VIRTUAL_ENV:+$(basename $VIRTUAL_ENV)}%F{%(#.blue.green)}"
 }
 
-#PS1='%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n㉿%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)$(tworkspace)
+#PS1='%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n㉿%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch_colourised)$(tworkspace)
 #└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
 
 configure_prompt() {
@@ -124,16 +128,16 @@ configure_prompt() {
     #[ "$EUID" -eq 0 ] && prompt_symbol=💀
     case "$PROMPT_ALTERNATIVE" in
         twoline)
-	     PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(prompt_venv))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch)$(tworkspace)\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
+	     PROMPT=$'%F{%(#.blue.green)}┌──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(prompt_venv))─}(%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]$(gbranch_colourised)$(tworkspace)\n└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
             # Right-side prompt with exit codes and background processes
             #RPROMPT=$'%(?.. %? %F{red}%B⨯%b%F{reset})%(1j. %j %F{yellow}%B⚙%b%F{reset}.)'
             ;;
         oneline)
-	     PROMPT=$'%F{%(#.blue.green)}${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(prompt_venv))─}%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b$(gbranch)$(tworkspace)%F{reset} %(#.#.$) '
+	     PROMPT=$'%F{%(#.blue.green)}${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(prompt_venv))─}%B%F{%(#.red.blue)}%n'$prompt_symbol$'%m%b%F{reset}:%B%F{%(#.blue.green)}%~%b$(gbranch_colourised)$(tworkspace)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
         backtrack)
-	     PROMPT=$'%F{%(#.blue.green)}${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(prompt_venv))─}%B%F{red}%n'$prompt_symbol$'%m%b%F{reset}:%B%F{blue}%~%b$(gbranch)$(tworkspace)%F{reset} %(#.#.$) '
+	     PROMPT=$'%F{%(#.blue.green)}${debian_chroot:+($debian_chroot)}${VIRTUAL_ENV:+($(prompt_venv))─}%B%F{red}%n'$prompt_symbol$'%m%b%F{reset}:%B%F{blue}%~%b$(gbranch_colourised)$(tworkspace)%F{reset} %(#.#.$) '
             RPROMPT=
             ;;
     esac
@@ -329,7 +333,7 @@ alias -s docx="libreoffice"
 alias -s tf="kv"
 alias -s hcl="kv"
 alias -s pdf="evince"
-alias CMMTP='function _cmmtp() { xdg-open "https://uts-edu.atlassian.net/browse/CMMTP-$1"; }; _cmmtp'
+# alias CMMTP='function _cmmtp() { xdg-open "https://uts-edu.atlassian.net/browse/CMMTP-$1"; }; _cmmtp'
 
 alias vsc="code ."
 alias cpc="xclip -sel c < "
