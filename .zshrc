@@ -104,6 +104,10 @@ gbranch_colourised() {
 }
 
 tworkspace () {
+	if [ ! -f "provider.tf" ]; then
+		return
+	fi
+
 	TWORKSPACE=$(terraform workspace show)
 	if [ -n "$TWORKSPACE" ]; then
 		if [ "$TWORKSPACE" != "default" ]; then
