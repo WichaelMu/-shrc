@@ -349,6 +349,7 @@ alias lsla="ls -la --group-directories-first"
 
 alias terr="terraform"
 alias gr="grep"
+alias mjsn="py $TESTBENCHLOC/M/mjsonify.py | jq -r"
 alias leganto_tmpl="$TESTBENCHLOC/Leganto/replace_template.sh $1"
 
 alias __SHOW_DESKTOP__="xdotool key ctrl+alt+d"
