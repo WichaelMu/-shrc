@@ -287,12 +287,16 @@ export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
 export DITLOC=~/Documents/IT\ OPS
-export CONSTANT_PYTHONPATH=$PYTHONPATH
+#export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-log-event-module/src/log_event_module:$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/kafka_event_module
+export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/kafka_event_module
+export CONSTANT_PYTHONPATH=$PYTHONPATH:$CUSTOM_PYTHON_MODULES
 
 export AWS_DEV_INTE="159851557642"
 export AWS_SANDPIT="046955552049"
 export AWS_NP_DATA="014498658256"
 export AWS_PR_DATA="014498658553"
+
+export AWS_DEFAULT_REGION="ap-southeast-2"
 ################################################################################
 
 
@@ -349,7 +353,7 @@ alias lsla="ls -la --group-directories-first"
 
 alias terr="terraform"
 alias gr="grep"
-alias mjsn="py $TESTBENCHLOC/M/mjsonify.py | jq -r"
+alias mjsn="py $TESTBENCHLOC/M/mjsonify.py | jq -r $1"
 alias leganto_tmpl="$TESTBENCHLOC/Leganto/replace_template.sh $1"
 
 alias __SHOW_DESKTOP__="xdotool key ctrl+alt+d"
@@ -576,6 +580,10 @@ update_discord() {
 
 	curl --location --output $DISCORD_TMP_LOC $DISCORD_URL
 	__install $DISCORD_TMP_LOC
+}
+
+remove_unused_kernels() {
+	sudo apt-get purge $(dpkg -l linux-{image,headers}-"[0-9]*" | awk '/ii/{print $2}' | grep -ve "$(uname -r | sed -r 's/-[a-z]+[0-9]+//')")
 }
 
 
