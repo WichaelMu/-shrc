@@ -287,8 +287,8 @@ export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
 export DITLOC=~/Documents/IT\ OPS
-#export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-log-event-module/src/log_event_module:$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/kafka_event_module
-export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/kafka_event_module
+export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-log-event-module/src/py_log_event_module/:$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/py_msk_serverless_data_streaming_client:$TESTBENCHLOC/ds/
+#export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/kafka_event_module
 export CONSTANT_PYTHONPATH=$PYTHONPATH:$CUSTOM_PYTHON_MODULES
 
 export AWS_DEV_INTE="159851557642"
@@ -619,12 +619,12 @@ function show_ls {
     if [[ -d "$prefix" ]]; then
         LBUFFER=$prefix
         zle redisplay
-        ls -la "$prefix" --group-directories-first
+        # ls -la "$prefix" --group-directories-first
     fi
 }
 
 # Bind the custom function to be triggered on each key press
-zle -N show_ls
+# zle -N show_ls
 # bindkey "^I" show_ls
 
 # Set completion options
@@ -636,6 +636,7 @@ zstyle ':completion:*' verbose yes
 zstyle ':completion:*' completer _complete _files _correct _prefix _ignored
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 # 'r:|[.]*=**'
+
 zstyle ':completion:*' max-errors 2
 zstyle ':completion:*' accept-exact 'true'
 
