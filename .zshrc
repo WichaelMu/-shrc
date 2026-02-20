@@ -799,3 +799,476 @@ autoload -Uz add-zsh-hook
 add-zsh-hook chpwd _rebuild_pythonpath_for_repo
 
 _rebuild_pythonpath_for_repo
+
+################################################################################
+# Directory History
+
+autoload -Uz add-zsh-hook
+
+typeset -ga _dirhist
+typeset -gi _dirhist_i
+typeset -g  _DIRHIST_SUPPRESS=""
+
+# What to do when you cd after going "back":
+#   truncate = traditional (drop forward)
+#   append   = keep forward, append new at end   => a b c d e*
+#   insert   = keep forward, insert after cursor => a b e* c d
+typeset -g DIRHIST_FORK_MODE="append"
+
+_dirhist_init() {
+  _dirhist=("$PWD")
+  _dirhist_i=1
+}
+_dirhist_init
+
+_dirhist_record() {
+  if [[ -n "$_DIRHIST_SUPPRESS" ]]; then
+    _DIRHIST_SUPPRESS=""
+    return
+  fi
+
+  local new="$PWD"
+  local len=${#_dirhist[@]}
+
+  if [[ "${_dirhist[_dirhist_i]}" == "$new" ]]; then
+    return
+  fi
+
+  # ---- De-duplicate: keep only the latest occurrence of $new ----
+  local -a filtered
+  local removed_before=0
+  local i
+
+  filtered=()
+  for i in {1..$len}; do
+    if [[ "${_dirhist[i]}" == "$new" ]]; then
+      if (( i < _dirhist_i )); then
+        (( removed_before++ ))
+      fi
+      continue
+    fi
+    filtered+=("${_dirhist[i]}")
+  done
+
+  _dirhist=("${filtered[@]}")
+  (( _dirhist_i -= removed_before ))
+
+  if (( _dirhist_i < 1 )); then
+    _dirhist_i=1
+  fi
+  if (( _dirhist_i > ${#_dirhist[@]} )); then
+    _dirhist_i=${#_dirhist[@]}
+  fi
+  # --------------------------------------------------------------
+
+  len=${#_dirhist[@]}
+
+  # Fork behaviour when cd after going "back"
+  if (( _dirhist_i < len )); then
+    case "$DIRHIST_FORK_MODE" in
+      truncate)
+        _dirhist=("${_dirhist[@]:0:_dirhist_i}" "$new")
+        _dirhist_i=${#_dirhist[@]}
+      ;;
+      append)
+        _dirhist+=("$new")
+        _dirhist_i=${#_dirhist[@]}
+      ;;
+      insert|*)
+        _dirhist=("${_dirhist[@]:0:_dirhist_i}" "$new" "${_dirhist[@]:_dirhist_i}")
+        _dirhist_i=$(( _dirhist_i + 1 ))
+      ;;
+    esac
+  else
+    _dirhist+=("$new")
+    _dirhist_i=${#_dirhist[@]}
+  fi
+
+  # Optional: cap history length (keep last 200)
+  if (( ${#_dirhist[@]} > 200 )); then
+    local drop=$(( ${#_dirhist[@]} - 200 ))
+    _dirhist=("${_dirhist[@]:$drop}")
+    _dirhist_i=$(( _dirhist_i - drop ))
+    if (( _dirhist_i < 1 )); then
+      _dirhist_i=1
+    fi
+  fi
+}
+add-zsh-hook chpwd _dirhist_record
+
+_dirhist_back_widget() {
+  if [[ -z "$BUFFER" && -z "$RBUFFER" ]]; then
+    if (( _dirhist_i > 1 )); then
+      (( _dirhist_i-- ))
+      _DIRHIST_SUPPRESS=1 builtin cd -- "${_dirhist[_dirhist_i]}" || return
+    fi
+    zle redisplay
+  else
+    zle .self-insert
+  fi
+}
+
+_dirhist_forward_widget() {
+  if [[ -z "$BUFFER" && -z "$RBUFFER" ]]; then
+    if (( _dirhist_i < ${#_dirhist[@]} )); then
+      (( _dirhist_i++ ))
+      _DIRHIST_SUPPRESS=1 builtin cd -- "${_dirhist[_dirhist_i]}" || return
+    fi
+    zle redisplay
+  else
+    zle .self-insert
+  fi
+}
+
+zle -N dirhist-back    _dirhist_back_widget
+zle -N dirhist-forward _dirhist_forward_widget
+
+# Bind in both common keymaps (emacs mode + vi insert mode)
+bindkey -M emacs '<' dirhist-back
+bindkey -M emacs '>' dirhist-forward
+bindkey -M viins '<' dirhist-back
+bindkey -M viins '>' dirhist-forward
+
+dirhist() {
+  local i
+  for i in {1..${#_dirhist[@]}}; do
+    if (( i == _dirhist_i )); then
+      printf "%3d  * %s\n" "$i" "${_dirhist[i]}"
+    else
+      printf "%3d    %s\n" "$i" "${_dirhist[i]}"
+    fi
+  done
+}
+
+# Jump to an entry by number: dh 12
+dh() {
+  local n="$1"
+  if [[ -z "$n" || ! "$n" =~ '^[0-9]+$' ]]; then
+    print -u2 "Usage: dh <number>"
+    return 2
+  fi
+
+  if (( n < 1 || n > ${#_dirhist[@]} )); then
+    print -u2 "dh: out of range (1..${#_dirhist[@]})"
+    return 2
+  fi
+
+  _dirhist_i="$n"
+  _DIRHIST_SUPPRESS=1 builtin cd -- "${_dirhist[_dirhist_i]}"
+}
+
+# ZLE widget to show dirhist via pager (q to quit)
+# --- Interactive dirhist picker (type a number to jump) ---
+
+# --- Vertical dirhist picker (prints like your old list, then reads a number) ---
+
+# Full-screen dirhist picker (uses alternate screen; no scrollback)
+# Keys:
+#   - Up/Down, PageUp/PageDown, Home/End to move
+#   - Type digits to jump to that number (highlights it)
+#   - Enter to jump (to typed number or highlighted row)
+#   - q or Enter on empty input to cancel
+
+# Full-screen dirhist picker (alternate screen) with reliable cleanup
+# Keys:
+#   Up/Down, PageUp/PageDown, Home/End
+#   Type digits to jump (highlights)
+#   Enter to jump, q to cancel
+# Full-screen dirhist picker (alternate screen) with Vim-style movement:
+#   j / k moves, 4j / 4k moves by count
+#   Enter selects highlighted
+#   Digits + Enter jumps to that entry number
+#   q cancels
+# Full-screen dirhist picker (alternate screen) with Vim-style movement + abs/rel numbers
+# Keys:
+#   j/k (count ok), arrows, g(top), G(bottom)
+#   Enter selects highlighted
+#   Digits + Enter jumps to that absolute entry
+#   q cancels
+
+_dirhist_pick_widget()
+{
+  emulate -L zsh
+  setopt localoptions no_beep
+
+  zmodload zsh/terminfo 2>/dev/null || return 0
+
+  local oldstty
+  oldstty="$(stty -g </dev/tty)"
+
+  local input=""
+  local sel="${_dirhist_i:-1}"
+  local top=1
+
+  local enter_alt="${terminfo[smcup]}"
+  local exit_alt="${terminfo[rmcup]}"
+  local clear="${terminfo[clear]}"
+  local civis="${terminfo[civis]}"
+  local cnorm="${terminfo[cnorm]}"
+  local smso="${terminfo[smso]}"
+  local rmso="${terminfo[rmso]}"
+
+  _dirhist__draw()
+  {
+    local rows="${LINES:-24}"
+    local cols="${COLUMNS:-80}"
+
+    local header=3
+    local footer=2
+    local view=$(( rows - header - footer ))
+
+    if (( view < 1 )); then
+      view=1
+    fi
+
+    if (( sel < 1 )); then
+      sel=1
+    fi
+
+    if (( sel > ${#_dirhist[@]} )); then
+      sel=${#_dirhist[@]}
+    fi
+
+    if (( sel < top )); then
+      top=$sel
+    elif (( sel >= top + view )); then
+      top=$(( sel - view + 1 ))
+    fi
+
+    if (( top < 1 )); then
+      top=1
+    fi
+
+    local max_top=$(( ${#_dirhist[@]} - view + 1 ))
+    if (( max_top < 1 )); then
+      max_top=1
+    fi
+    if (( top > max_top )); then
+      top=$max_top
+    fi
+
+    print -n -r -- "${clear:-$'\e[2J\e[H']}" >/dev/tty
+
+    printf "Directory history (total %d) — j/k (count ok), g(top), G(bottom), Enter, q\n" "${#_dirhist[@]}" >/dev/tty
+    printf "Columns: abs rel  (* = current dir)\n" >/dev/tty
+    printf "Current dir index: %d\n" "${_dirhist_i:-1}" >/dev/tty
+
+    local i idx path mark maxpath line rel
+    # abs(3) + space + rel(3) + two spaces + mark + space => ~11 chars before path
+    maxpath=$(( cols - 11 ))
+    if (( maxpath < 10 )); then
+      maxpath=10
+    fi
+
+    for i in {1..$view}; do
+      idx=$(( top + i - 1 ))
+      if (( idx > ${#_dirhist[@]} )); then
+        break
+      fi
+
+      path="${_dirhist[idx]}"
+      mark=" "
+      if (( idx == _dirhist_i )); then
+        mark="*"
+      fi
+
+      rel=$(( idx - sel ))
+      if (( rel < 0 )); then
+        rel=$(( -rel ))
+      fi
+
+      if (( ${#path} > maxpath )); then
+        path="${path[1,$(( maxpath - 1 ))]}…"
+      fi
+
+      line="$(printf "%3d %3d  %s %s" "$idx" "$rel" "$mark" "$path")"
+
+      if (( idx == sel )); then
+        if [[ -n "$smso" ]]; then
+          print -n -r -- "$smso" >/dev/tty
+        fi
+        printf "%s\n" "$line" >/dev/tty
+        if [[ -n "$rmso" ]]; then
+          print -n -r -- "$rmso" >/dev/tty
+        fi
+      else
+        printf "%s\n" "$line" >/dev/tty
+      fi
+    done
+
+    printf "\nSelection: %d   Count/Jump: %s\n" "$sel" "${input:- }" >/dev/tty
+  }
+
+  _dirhist__read_key()
+  {
+    local k
+    IFS= read -r -k 1 k </dev/tty || return 1
+
+    if [[ "$k" == $'\e' ]]; then
+      local k2 k3 k4
+      IFS= read -r -k 1 -t 0.01 k2 </dev/tty || { REPLY="$k"; return 0; }
+
+      if [[ "$k2" == '[' ]]; then
+        IFS= read -r -k 1 -t 0.01 k3 </dev/tty || { REPLY="$k$k2"; return 0; }
+
+        if [[ "$k3" == [ABCD] ]]; then
+          REPLY="$k$k2$k3"
+          return 0
+        fi
+
+        IFS= read -r -k 1 -t 0.01 k4 </dev/tty || { REPLY="$k$k2$k3"; return 0; }
+        REPLY="$k$k2$k3$k4"
+        return 0
+      fi
+
+      REPLY="$k$k2"
+      return 0
+    fi
+
+    REPLY="$k"
+    return 0
+  }
+
+  {
+    if [[ -n "$enter_alt" ]]; then
+      print -n -r -- "$enter_alt" >/dev/tty
+    else
+      print -n -r -- $'\e[?1049h' >/dev/tty
+    fi
+
+    if [[ -n "$civis" ]]; then
+      print -n -r -- "$civis" >/dev/tty
+    else
+      print -n -r -- $'\e[?25l' >/dev/tty
+    fi
+
+    stty -echo -icanon time 0 min 1 </dev/tty
+
+    _dirhist__draw
+
+    while true; do
+      _dirhist__read_key || break
+      local key="$REPLY"
+      local n
+
+      if [[ -n "$input" && "$input" == <-> ]]; then
+        n="$input"
+      else
+        n=1
+      fi
+
+      case "$key" in
+        $'\n'|$'\r')
+        {
+          local target="$sel"
+
+          if [[ -n "$input" && "$input" == <-> ]]; then
+            target="$input"
+          fi
+
+          if (( target >= 1 && target <= ${#_dirhist[@]} )); then
+            _dirhist_i="$target"
+            _DIRHIST_SUPPRESS=1 builtin cd -- "${_dirhist[_dirhist_i]}" || true
+          fi
+
+          break
+        }
+        ;;
+        [qQ])
+        {
+          break
+        }
+        ;;
+        [jJ]|$'\e[B')
+        {
+          (( sel += n ))
+          input=""
+        }
+        ;;
+        [kK]|$'\e[A')
+        {
+          (( sel -= n ))
+          input=""
+        }
+        ;;
+        [g])
+        {
+          sel=1
+          input=""
+        }
+        ;;
+        [G])
+        {
+          sel=${#_dirhist[@]}
+          input=""
+        }
+        ;;
+        $'\e[5~')
+        {
+          (( sel -= (LINES - 5) ))
+          input=""
+        }
+        ;;
+        $'\e[6~')
+        {
+          (( sel += (LINES - 5) ))
+          input=""
+        }
+        ;;
+        $'\e[H'|$'\e[1~')
+        {
+          sel=1
+          input=""
+        }
+        ;;
+        $'\e[F'|$'\e[4~')
+        {
+          sel=${#_dirhist[@]}
+          input=""
+        }
+        ;;
+        $'\x7f'|$'\b')
+        {
+          input="${input%?}"
+        }
+        ;;
+        [0-9])
+        {
+          input+="$key"
+        }
+        ;;
+      esac
+
+      if (( sel < 1 )); then
+        sel=1
+      fi
+      if (( sel > ${#_dirhist[@]} )); then
+        sel=${#_dirhist[@]}
+      fi
+
+      _dirhist__draw
+    done
+  }
+  always
+  {
+    stty "$oldstty" </dev/tty 2>/dev/tty
+
+    if [[ -n "$cnorm" ]]; then
+      print -n -r -- "$cnorm" >/dev/tty
+    else
+      print -n -r -- $'\e[?25h' >/dev/tty
+    fi
+
+    if [[ -n "$exit_alt" ]]; then
+      print -n -r -- "$exit_alt" >/dev/tty
+    else
+      print -n -r -- $'\e[?1049l' >/dev/tty
+    fi
+  }
+
+  zle reset-prompt
+}
+
+zle -N dirhist-pick _dirhist_pick_widget
+bindkey -M emacs '^G' dirhist-pick
+bindkey -M viins '^G' dirhist-pick
