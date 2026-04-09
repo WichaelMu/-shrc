@@ -288,8 +288,9 @@ export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
 export DITLOC=~/Documents/IT\ OPS
 export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-log-event-module/src/py_log_event_module/:$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/py_msk_serverless_data_streaming_client:$TESTBENCHLOC/ds/
+export CUSTOM_PYTHON_SUBMODULES=$DITLOC/py-data-log-event-module/:$DITLOC/py-data-manifest-engine/:$DITLOC/py-msk-serverless-data-streaming-client
 #export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/kafka_event_module
-export CONSTANT_PYTHONPATH=$PYTHONPATH:$CUSTOM_PYTHON_MODULES
+export CONSTANT_PYTHONPATH=$PYTHONPATH:$CUSTOM_PYTHON_MODULES:$CUSTOM_PYTHON_SUBMODULES
 
 export AWS_DEV_INTE="159851557642"
 export AWS_SANDPIT="046955552049"
@@ -781,7 +782,7 @@ _rebuild_pythonpath_for_repo() {
   local joined combined
   joined="${(j/:/)addpaths}"
   if [[ -n "$base" && -n "$joined" ]]; then
-    combined="$base:$joined"
+    combined="$joined:$base"
   elif [[ -n "$base" ]]; then
     combined="$base"
   else
