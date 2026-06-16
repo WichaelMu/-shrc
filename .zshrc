@@ -427,8 +427,9 @@ json2terr() {
 }
 
 now() {
-	date +"%A %d %B %Y %H:%M:%S.%N %Z (%z)" | __COPY__
-	echo $(__PASTE__)
+	# date +"%A %d %B %Y %H:%M:%S.%N %Z (%z)" | __COPY__
+	# echo $(__PASTE__)
+	echo $(date +"%A %d %B %Y %H:%M:%S.%N %Z (%z)")
 }
 
 ddiff() {
