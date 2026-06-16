@@ -288,7 +288,7 @@ export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
 export DITLOC=~/Documents/IT\ OPS
 export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-log-event-module/src/py_log_event_module/:$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/py_msk_serverless_data_streaming_client:$TESTBENCHLOC/ds/
-export CUSTOM_PYTHON_SUBMODULES=$DITLOC/py-data-log-event-module/:$DITLOC/py-data-manifest-engine/:$DITLOC/py-msk-serverless-data-streaming-client
+export CUSTOM_PYTHON_SUBMODULES=$DITLOC/py-data-log-event-module/:$DITLOC/py-data-manifest-engine/:$DITLOC/py-msk-serverless-data-streaming-client:$DITLOC/py-data-rule-engine-module/
 #export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/kafka_event_module
 export CONSTANT_PYTHONPATH=$PYTHONPATH:$CUSTOM_PYTHON_MODULES:$CUSTOM_PYTHON_SUBMODULES
 
@@ -298,6 +298,8 @@ export AWS_NP_DATA="014498658256"
 export AWS_PR_DATA="014498658553"
 
 export AWS_DEFAULT_REGION="ap-southeast-2"
+
+export KALI="KALI"
 ################################################################################
 
 
@@ -738,6 +740,7 @@ fi
 
 # PYTHONPATH Recompute on Change Directory -------------------------------------
 
+alias __REINDEX_PYTHONPATH__=_rebuild_pythonpath_for_repo
 _rebuild_pythonpath_for_repo() {
   local target="contrib/src/lambda"
   local base="${CONSTANT_PYTHONPATH}"
