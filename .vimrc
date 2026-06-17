@@ -123,6 +123,8 @@ let b:ale_python_pyright_config = {
 " let g:ale_warn_about_trailing_whitespace = 0
 " let g:ale_warn_about_trailing_blank_lines = 0
 nnoremap <leader>p :ALEToggle<CR>
+nnoremap <leader>] :ALENext<CR>
+nnoremap <leader>[ :ALEPrevious<CR>
 " <leader>b toggle just this buffer
 " nnoremap <leader>b :ALEToggleBuffer<CR>
 " <leader>c run checks once even if disabled
