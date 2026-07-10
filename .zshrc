@@ -306,6 +306,7 @@ export KALI="KALI"
 ################################################################################
 alias kv=kvim
 alias kvd="kv ."
+alias kvi="kv -"
 
 alias _="clear"
 alias __="exit"
