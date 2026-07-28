@@ -73,6 +73,7 @@ Plug 'drewtempelmeyer/palenight.vim'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'powerman/vim-plugin-AnsiEsc'
 Plug 'dense-analysis/ale'
+Plug 'vim-scripts/AnsiEsc.vim'
 call plug#end()
 
 " colorscheme palenight
@@ -129,3 +130,21 @@ nnoremap <leader>[ :ALEPrevious<CR>
 " nnoremap <leader>b :ALEToggleBuffer<CR>
 " <leader>c run checks once even if disabled
 " nnoremap <leader>c :ALELint<CR>
+
+" ANSI ESC Stuff """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! AutoAnsiEsc() abort
+    if get(b:, 'ansi_esc_applied', 0)
+        return
+    endif
+
+    if exists(':AnsiEsc') == 2
+                \ && search('\e\[[0-9;]*[[:alpha:]]', 'nw')
+        silent AnsiEsc
+        let b:ansi_esc_applied = 1
+    endif
+endfunction
+
+augroup auto_ansi_esc
+    autocmd!
+    autocmd BufReadPost * call AutoAnsiEsc()
+augroup END
