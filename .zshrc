@@ -287,7 +287,8 @@ export USANDPIT="046955552049--UTS-AWS-Sandpit"
 export BINARIES="/usr/local/bin"
 export TESTBENCHLOC=~/Documents/testbench
 export DITLOC=~/Documents/IT\ OPS
-export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-log-event-module/src/py_log_event_module/:$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/py_msk_serverless_data_streaming_client:$TESTBENCHLOC/ds/
+#:$DITLOC/py-data-log-event-module/src/py_log_event_module/:$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/py_msk_serverless_data_streaming_client
+export CUSTOM_PYTHON_MODULES=$TESTBENCHLOC/ds/
 export CUSTOM_PYTHON_SUBMODULES=$DITLOC/py-data-log-event-module/:$DITLOC/py-data-manifest-engine/:$DITLOC/py-msk-serverless-data-streaming-client:$DITLOC/py-data-rule-engine-module/
 #export CUSTOM_PYTHON_MODULES=$DITLOC/py-data-manifest-engine/src/manifest_engine:$DITLOC/py-msk-serverless-data-streaming-client/src/kafka_event_module
 export CONSTANT_PYTHONPATH=$PYTHONPATH:$CUSTOM_PYTHON_MODULES:$CUSTOM_PYTHON_SUBMODULES
@@ -296,6 +297,8 @@ export AWS_DEV_INTE="159851557642"
 export AWS_SANDPIT="046955552049"
 export AWS_NP_DATA="014498658256"
 export AWS_PR_DATA="014498658553"
+export NP=$AWS_NP_DATA
+export PR=$AWS_PR_DATA
 
 export AWS_DEFAULT_REGION="ap-southeast-2"
 
